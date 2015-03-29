@@ -1,23 +1,24 @@
-#!/usr/bin/env python2.7
-# -*- coding: utf-8 -*-
+#!/usr/bin/python3
 
 # Example module
 # Copyright (C) 2014 Musikhin Andrey <melomansegfault@gmail.com>
+# Copyright (C) 2015 Kato Masaya <masaya@w32.jp>
 
 import kivy
 from kivy.config import Config
+
 Config.set("input", "mouse", "mouse, disable_multitouch")
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
-from .table import Table
-
+from table import Table
 
 
 class MainScreen(BoxLayout):
     """docstring for MainScreen"""
+
     def __init__(self):
         super(MainScreen, self).__init__()
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
@@ -26,13 +27,9 @@ class MainScreen(BoxLayout):
         self.my_table.cols = 2
         self.my_table.add_button_row('123', '456')
         for i in range(110):
-            self.my_table.add_row([Button, {'text': 'button%s' % i,
-                                            'color_widget': [0, 0, 0.5, 1],
-                                            'color_click': [0, 1, 0, 1]
-                                            }], 
-                                  [TextInput, {'text': 'textinput%s' % i,
-                                               'color_click': [1, 0, .5, 1]
-                                               }])
+            self.my_table.add_row(
+                [Button, {'text': 'button%s' % i, 'color_widget': [0, 0, 0.5, 1], 'color_click': [0, 1, 0, 1]}],
+                [TextInput, {'text': 'textinput%s' % i, 'color_click': [1, 0, .5, 1]}])
         self.my_table.label_panel.visible = False
         self.my_table.label_panel.height_widget = 50
         self.my_table.number_panel.auto_width = False
@@ -57,35 +54,34 @@ class MainScreen(BoxLayout):
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         """ Method of pressing keyboard  """
-        if keycode[0] == 273:   # UP
+        if keycode[0] == 273:  # UP
             print(keycode)
             self.my_table.scroll_view.up()
-        if keycode[0] == 274:   # DOWN
+        if keycode[0] == 274:  # DOWN
             print(keycode)
             self.my_table.scroll_view.down()
-        if keycode[0] == 281:   # PageDown
+        if keycode[0] == 281:  # PageDown
             print(keycode)
             self.my_table.scroll_view.pgdn()
-        if keycode[0] == 280:   # PageUp
+        if keycode[0] == 280:  # PageUp
             print(keycode)
             self.my_table.scroll_view.pgup()
-        if keycode[0] == 278:   # Home
+        if keycode[0] == 278:  # Home
             print(keycode)
             self.my_table.scroll_view.home()
-        if keycode[0] == 279:   # End
+        if keycode[0] == 279:  # End
             print(keycode)
             self.my_table.scroll_view.end()
 
 
-
 class TestApp(App):
     """ App class """
+
     def build(self):
         return MainScreen()
 
     def on_pause(self):
         return True
-
 
 
 if __name__ in ('__main__', '__android__'):

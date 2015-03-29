@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
-# -*- coding: utf-8 -*-
+#!/usr/bin/python3
 
 # Table module
 # Copyright (C) 2014 Musikhin Andrey <melomansegfault@gmail.com>
+# Copyright (C) 2015 Kato Masaya <masaya@w32.jp>
 
 import kivy
 from kivy.lang import Builder
@@ -15,9 +15,7 @@ from kivy.uix.label import Label
 from os.path import join, dirname, abspath
 
 
-
 Builder.load_file(join(dirname(abspath(__file__)), 'table.kv'))
-
 
 
 class Table(BoxLayout):
@@ -59,6 +57,7 @@ class Table(BoxLayout):
     def cols(self):
         """ Get/set number of columns """
         return self._cols
+
     @cols.setter
     def cols(self, number=0):
         self._cols = number
@@ -70,8 +69,8 @@ class Table(BoxLayout):
     def row_count(self):
         """ Get row count in our table """
         grid_item_count = len(self.grid.children)
-        count = grid_item_count/self._cols
-        remainder = grid_item_count%self._cols
+        count = grid_item_count / self._cols
+        remainder = grid_item_count % self._cols
         if remainder > 0:
             count += 1
         return count
@@ -92,11 +91,9 @@ class Table(BoxLayout):
                 row_widget_list.append(self.grid.children[0])
             # Adding a widget to two-level array 
             self._grid._cells.append(row_widget_list)
-            self.number_panel.add_widget(NewNumberLabel(
-                                               text=str(self.row_count)))
+            self.number_panel.add_widget(NewNumberLabel(text=str(self.row_count)))
         else:
-            print('ERROR: Please, add %s strings in method\'s arguments' %\
-                                                              str(self._cols))
+            print('ERROR: Please, add %s strings in method\'s arguments' % str(self._cols))
 
     def add_row(self, *args):
         """
@@ -115,14 +112,12 @@ class Table(BoxLayout):
                 row_widget_list.append(self.grid.children[0])
             # Adding a widget to two-level array 
             self._grid._cells.append(row_widget_list)
-            self.number_panel.add_widget(NewNumberLabel(
-                                               text=str(self.row_count)))
+            self.number_panel.add_widget(NewNumberLabel(text=str(self.row_count)))
             # Default the choosing
             if len(self.grid.cells) == 1:
                 self.choose_row(0)
         else:
-            print('ERROR: Please, add %s strings in method\'s arguments' %\
-                                                              str(self._cols))
+            print('ERROR: Please, add %s strings in method\'s arguments' % str(self._cols))
 
     def del_row(self, number):
         """ Delete a row by number """
@@ -146,8 +141,7 @@ class Table(BoxLayout):
             for col_num in range(self._cols):
                 old_grid_element = self.grid.cells[self._chosen_row][col_num]
                 current_cell = self.grid.cells[row_num][col_num]
-                old_grid_element._background_color(
-                                                 old_grid_element.color_widget)
+                old_grid_element._background_color(old_grid_element.color_widget)
                 current_cell._background_color(current_cell.color_click)
             self._chosen_row = row_num
         elif len(self.grid.cells) == 0:
@@ -156,15 +150,14 @@ class Table(BoxLayout):
             for col_num in range(self._cols):
                 old_grid_element = self.grid.cells[self._chosen_row][col_num]
                 current_cell = self.grid.cells[-1][col_num]
-                old_grid_element._background_color(
-                                                 old_grid_element.color_widget)
+                old_grid_element._background_color(old_grid_element.color_widget)
                 current_cell._background_color(current_cell.color_click)
             self._chosen_row = row_num
 
 
-
 class ScrollViewTable(ScrollView):
     """ScrollView for grid table"""
+
     def __init__(self, **kwargs):
         super(ScrollViewTable, self).__init__(**kwargs)
         self.bind(size=self._redraw_widget)
@@ -176,6 +169,7 @@ class ScrollViewTable(ScrollView):
     def color(self):
         """ Background color """
         return self._color
+
     @color.setter
     def color(self, color):
         with self.canvas.before:
@@ -189,30 +183,27 @@ class ScrollViewTable(ScrollView):
         if self.size != [100.0, 100.0] and (self.parent.row_count != 0):
             if self.parent._chosen_row - row_num > 0:
                 self.parent.choose_row(self.parent._chosen_row - row_num)
-            else: self.parent.choose_row(0)
+            else:
+                self.parent.choose_row(0)
             grid_height = float(self.children[0].height)
             scroll_height = float(grid_height - self.height)
-            cur_cell = self.children[0].children[0].\
-                       cells[self.parent._chosen_row][0]
+            cur_cell = self.children[0].children[0].cells[self.parent._chosen_row][0]
             cur_cell_height = float(cur_cell.height)
             cur_row_y = float(cur_cell.y)
             # The convert scroll Y position
-            _scroll_y = self.scroll_y * scroll_height + self.height - \
-                                                        cur_cell_height
+            _scroll_y = self.scroll_y * scroll_height + self.height - cur_cell_height
             # Jump to the chosen row
             top_scroll_excess = cur_row_y - cur_cell_height
             down_scroll_excess = cur_row_y + self.height - cur_cell_height
             if _scroll_y > down_scroll_excess or _scroll_y < top_scroll_excess:
-                new_scroll_y = 0 + \
-                          1*((cur_row_y-self.height/2)/100)/(scroll_height/100)
+                new_scroll_y = 0 + 1 * ((cur_row_y - self.height / 2) / 100) / (scroll_height / 100)
                 if new_scroll_y < 0:
                     self.scroll_y = 0
                 else:
                     self.scroll_y = new_scroll_y
             # Scrolling to follows the current row
             if (cur_row_y) > _scroll_y:
-                self.scroll_y = self.scroll_y + \
-                                    1*(cur_cell_height/100)/(scroll_height/100)
+                self.scroll_y = self.scroll_y + 1 * (cur_cell_height / 100) / (scroll_height / 100)
             # Stopping the scrolling when start of grid
             if self.scroll_y > 1:
                 self.scroll_y = 1
@@ -223,11 +214,11 @@ class ScrollViewTable(ScrollView):
         if self.size != [100.0, 100.0] and (self.parent.row_count != 0):
             if self.parent._chosen_row + row_num < self.parent.row_count - 1:
                 self.parent.choose_row(self.parent._chosen_row + row_num)
-            else: self.parent.choose_row(self.parent.row_count-1)
+            else:
+                self.parent.choose_row(self.parent.row_count - 1)
             grid_height = float(self.children[0].height)
             scroll_height = float(grid_height - self.height)
-            cur_cell = self.children[0].children[0].\
-                       cells[self.parent._chosen_row][0]
+            cur_cell = self.children[0].children[0].cells[self.parent._chosen_row][0]
             cur_cell_height = float(cur_cell.height)
             cur_row_y = float(cur_cell.y)
             # The convert scroll Y position
@@ -236,16 +227,14 @@ class ScrollViewTable(ScrollView):
             top_scroll_excess = cur_row_y - self.height + cur_cell_height
             down_scroll_excess = cur_row_y + cur_cell_height
             if _scroll_y < top_scroll_excess or _scroll_y > down_scroll_excess:
-                new_scroll_y = 0 + \
-                          1*((cur_row_y-self.height/2)/100)/(scroll_height/100)
+                new_scroll_y = 0 + 1 * ((cur_row_y - self.height / 2) / 100) / (scroll_height / 100)
                 if new_scroll_y > 1:
                     self.scroll_y = 1
                 else:
                     self.scroll_y = new_scroll_y
             # Scrolling to follows the current row
             if cur_row_y < _scroll_y:
-                self.scroll_y = self.scroll_y - \
-                                    1*(cur_cell_height/100)/(scroll_height/100)
+                self.scroll_y = self.scroll_y - 1 * (cur_cell_height / 100) / (scroll_height / 100)
             # Stopping the scrolling when end of grid
             if self.scroll_y < 0:
                 self.scroll_y = 0
@@ -294,17 +283,17 @@ class ScrollViewTable(ScrollView):
             number_panel.width_widget = last_number_label.texture_size[0] + 10
 
 
-
 class ScrollViewBoxLayout(GridLayout):
     """ScrollView's BoxLayout class"""
+
     def __init__(self, **kwargs):
         super(ScrollViewBoxLayout, self).__init__(**kwargs)
         self.bind(minimum_height=self.setter('height'))
 
 
-
 class LabelPanel(BoxLayout):
     """Panel for column labels"""
+
     def __init__(self, **kwargs):
         super(LabelPanel, self).__init__(**kwargs)
         self.bind(size=self._redraw_widget)
@@ -321,6 +310,7 @@ class LabelPanel(BoxLayout):
     def color(self):
         """ Background color """
         return self._color
+
     @color.setter
     def color(self, color):
         self._color = color
@@ -330,6 +320,7 @@ class LabelPanel(BoxLayout):
     def visible(self):
         """ Get/set panel visibility """
         return self._visible
+
     @visible.setter
     def visible(self, visible=True):
         if visible:
@@ -343,6 +334,7 @@ class LabelPanel(BoxLayout):
     def height_widget(self):
         """ Get/set panel height """
         return self.height
+
     @height_widget.setter
     def height_widget(self, height=30):
         if self._visible:
@@ -359,9 +351,9 @@ class LabelPanel(BoxLayout):
             Rectangle(pos=self.pos, size=self.size)
 
 
-
 class NumberPanel(BoxLayout):
     """Num panel class"""
+
     def __init__(self, **kwargs):
         super(NumberPanel, self).__init__(**kwargs)
         self.bind(size=self._redraw_widget)
@@ -374,6 +366,7 @@ class NumberPanel(BoxLayout):
     def auto_width(self):
         """ Auto width this panel """
         return self._auto_width
+
     @auto_width.setter
     def auto_width(self, value):
         self._auto_width = value
@@ -382,6 +375,7 @@ class NumberPanel(BoxLayout):
     def color(self):
         """ Background color """
         return self._color
+
     @color.setter
     def color(self, color):
         self._color = color
@@ -391,6 +385,7 @@ class NumberPanel(BoxLayout):
     def visible(self):
         """ Get/set panel visible """
         return self._visible
+
     @visible.setter
     def visible(self, visible=True):
         # Get null label object
@@ -408,6 +403,7 @@ class NumberPanel(BoxLayout):
     def width_widget(self):
         """ Get/set panel width """
         return self._width
+
     @width_widget.setter
     def width_widget(self, width):
         null_label = self.parent.parent.parent.label_panel.children[-1]
@@ -424,9 +420,9 @@ class NumberPanel(BoxLayout):
             Rectangle(pos=self.pos, size=self.size)
 
 
-
 class GridTable(GridLayout):
     """This is the table itself"""
+
     def __init__(self, **kwargs):
         super(GridTable, self).__init__(**kwargs)
         self.bind(size=self._redraw_widget)
@@ -439,6 +435,7 @@ class GridTable(GridLayout):
     def current_cell(self):
         """ Current cell """
         return self._current_cell
+
     @current_cell.setter
     def current_cell(self, value):
         self._current_cell = value
@@ -447,6 +444,7 @@ class GridTable(GridLayout):
     def color(self):
         """ Background color """
         return self._color
+
     @color.setter
     def color(self, color):
         self._color = color
@@ -462,7 +460,7 @@ class GridTable(GridLayout):
         for index, child in enumerate(reversed(self.children)):
             if item_object == child:
                 columns = self.parent.parent.parent._cols
-                row_index = index/columns
+                row_index = index / columns
                 print(str(row_index), 'row is chosen')
                 return row_index
                 break
@@ -476,17 +474,17 @@ class GridTable(GridLayout):
             self.parent.children[-1].height = .01
 
 
-
 class NewCell(object):
     """Grid/button element for table"""
 
     def __init__(self, **kwargs):
         super(NewCell, self).__init__(**kwargs)
         self.bind(size=self._redraw_widget)
-        self.bind(on_press = self._on_press_button)
+        self.bind(on_press=self._on_press_button)
         try:
             self.bind(focus=self._on_press_button)
-        except: pass
+        except:
+            pass
         self._color_widget = [1, 1, 1, 1]
         self._color_click = [.3, .3, .3, 1]
 
@@ -498,6 +496,7 @@ class NewCell(object):
     def color_widget(self):
         """ Cell color """
         return self._color_widget
+
     @color_widget.setter
     def color_widget(self, value):
         self._color_widget = value
@@ -507,6 +506,7 @@ class NewCell(object):
     def color_click(self):
         """ Cell click color """
         return self._color_click
+
     @color_click.setter
     def color_click(self, value):
         self._color_click = value
@@ -527,18 +527,17 @@ class NewCell(object):
         for num, line in enumerate(self.parent.cells):
             for cell in line:
                 if cell == self:
-                    self.parent.parent.children[1].children[-(num+1)].height =\
-                                                                    self.height
+                    self.parent.parent.children[1].children[-(num + 1)].height = self.height
                     break
                 break
 
 
-
 class NewLabel(Button):
     """Label element for label panel"""
+
     def __init__(self, **kwargs):
         super(NewLabel, self).__init__(**kwargs)
-        self.bind(on_press = self._on_press_button)
+        self.bind(on_press=self._on_press_button)
 
     def _on_press_button(self, touch=None):
         """ On press method for current object """
@@ -547,20 +546,20 @@ class NewLabel(Button):
         print('pressed on name label')
 
 
-
 class NullLabel(Button):
     """Num Label object class"""
 
     def __init__(self, **kwargs):
         super(NullLabel, self).__init__(**kwargs)
         self.bind(size=self._redraw_widget)
-        self.bind(on_press = self._on_press_button)
+        self.bind(on_press=self._on_press_button)
         self._color = [.2, .2, .2, 1]
 
     @property
     def color(self):
         """ Background color """
         return self._color
+
     @color.setter
     def color(self, color):
         self._color = color
@@ -578,15 +577,14 @@ class NullLabel(Button):
             self.canvas.before.clear()
             Color(*self._color)
             Rectangle(pos=self.pos, size=self.size)
-        
-        
+
 
 class NewNumberLabel(Button):
     """Num Label object class"""
 
     def __init__(self, **kwargs):
         super(NewNumberLabel, self).__init__(**kwargs)
-        self.bind(on_press = self._on_press_button)
+        self.bind(on_press=self._on_press_button)
 
     def _on_press_button(self, touch=None):
         """ On press method for current object """
