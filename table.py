@@ -69,7 +69,7 @@ class Table(BoxLayout):
     def row_count(self):
         """ Get row count in our table """
         grid_item_count = len(self.grid.children)
-        count = grid_item_count / self._cols
+        count = grid_item_count // self._cols
         remainder = grid_item_count % self._cols
         if remainder > 0:
             count += 1
@@ -460,7 +460,7 @@ class GridTable(GridLayout):
         for index, child in enumerate(reversed(self.children)):
             if item_object == child:
                 columns = self.parent.parent.parent._cols
-                row_index = index / columns
+                row_index = index // columns
                 print(str(row_index), 'row is chosen')
                 return row_index
                 break
