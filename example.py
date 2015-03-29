@@ -12,7 +12,7 @@ from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
-from table import Table
+from .table import Table
 
 
 
@@ -49,7 +49,7 @@ class MainScreen(BoxLayout):
         self.my_table.grid.cells[1][1].text = 'edited textinput text'
         self.my_table.grid.cells[3][0].height = 100
         self.my_table.label_panel.labels[1].text = 'New name'
-        print "ROW COUNT:", self.my_table.row_count
+        print("ROW COUNT:", self.my_table.row_count)
         self.add_widget(self.my_table)
 
     def _keyboard_closed(self):
@@ -58,22 +58,22 @@ class MainScreen(BoxLayout):
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         """ Method of pressing keyboard  """
         if keycode[0] == 273:   # UP
-            print keycode
+            print(keycode)
             self.my_table.scroll_view.up()
         if keycode[0] == 274:   # DOWN
-            print keycode
+            print(keycode)
             self.my_table.scroll_view.down()
         if keycode[0] == 281:   # PageDown
-            print keycode
+            print(keycode)
             self.my_table.scroll_view.pgdn()
         if keycode[0] == 280:   # PageUp
-            print keycode
+            print(keycode)
             self.my_table.scroll_view.pgup()
         if keycode[0] == 278:   # Home
-            print keycode
+            print(keycode)
             self.my_table.scroll_view.home()
         if keycode[0] == 279:   # End
-            print keycode
+            print(keycode)
             self.my_table.scroll_view.end()
 
 

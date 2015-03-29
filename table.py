@@ -95,8 +95,8 @@ class Table(BoxLayout):
             self.number_panel.add_widget(NewNumberLabel(
                                                text=str(self.row_count)))
         else:
-            print 'ERROR: Please, add %s strings in method\'s arguments' %\
-                                                              str(self._cols)
+            print('ERROR: Please, add %s strings in method\'s arguments' %\
+                                                              str(self._cols))
 
     def add_row(self, *args):
         """
@@ -108,7 +108,7 @@ class Table(BoxLayout):
             for num, item in enumerate(args):
                 Cell = type('Cell', (NewCell, item[0]), {})
                 cell = Cell()
-                for key in item[1].keys():
+                for key in list(item[1].keys()):
                     setattr(cell, key, item[1][key])
                 self.grid.add_widget(cell)
                 # Create widgets row list
@@ -121,8 +121,8 @@ class Table(BoxLayout):
             if len(self.grid.cells) == 1:
                 self.choose_row(0)
         else:
-            print 'ERROR: Please, add %s strings in method\'s arguments' %\
-                                                              str(self._cols)
+            print('ERROR: Please, add %s strings in method\'s arguments' %\
+                                                              str(self._cols))
 
     def del_row(self, number):
         """ Delete a row by number """
@@ -135,7 +135,7 @@ class Table(BoxLayout):
             if self._chosen_row == number:
                 self.choose_row(number)
         else:
-            print 'ERROR: Nothing to delete...'
+            print('ERROR: Nothing to delete...')
 
     def choose_row(self, row_num=0):
         """ 
@@ -151,7 +151,7 @@ class Table(BoxLayout):
                 current_cell._background_color(current_cell.color_click)
             self._chosen_row = row_num
         elif len(self.grid.cells) == 0:
-            print 'ERROR: Nothing to choose...'
+            print('ERROR: Nothing to choose...')
         else:
             for col_num in range(self._cols):
                 old_grid_element = self.grid.cells[self._chosen_row][col_num]
@@ -463,7 +463,7 @@ class GridTable(GridLayout):
             if item_object == child:
                 columns = self.parent.parent.parent._cols
                 row_index = index/columns
-                print str(row_index), 'row is chosen'
+                print(str(row_index), 'row is chosen')
                 return row_index
                 break
 
@@ -515,7 +515,7 @@ class NewCell(object):
         """ On press method for current object """
         self.parent.current_cell = args[0]
         self.state = 'normal'
-        print 'pressed on grid item'
+        print('pressed on grid item')
         self.main_table = self.parent.parent.parent.parent
         self.grid = self.parent
         # self.color = self._color
@@ -544,7 +544,7 @@ class NewLabel(Button):
         """ On press method for current object """
         # Disable a click
         self.state = 'normal'
-        print 'pressed on name label'
+        print('pressed on name label')
 
 
 
@@ -570,7 +570,7 @@ class NullLabel(Button):
         """ On press method for current object """
         # Disable a click
         self.state = 'normal'
-        print 'pressed on null label'
+        print('pressed on null label')
 
     def _redraw_widget(self, *args):
         """ Method of redraw this widget """
@@ -591,4 +591,4 @@ class NewNumberLabel(Button):
     def _on_press_button(self, touch=None):
         """ On press method for current object """
         self.state = 'normal'
-        print 'pressed on number label'
+        print('pressed on number label')
