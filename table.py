@@ -182,13 +182,13 @@ class ScrollViewTable(ScrollView):
     def up(self, row_num=1):
         """ Scrolling up when the chosen row is out of view """
         if self.size != [100.0, 100.0] and (self.parent.row_count != 0):
-            if self.parent._chosen_row - row_num > 0:
-                self.parent.choose_row(self.parent._chosen_row - row_num)
+            if self.parent.chosen_row - row_num > 0:
+                self.parent.choose_row(self.parent.chosen_row - row_num)
             else:
                 self.parent.choose_row(0)
             grid_height = float(self.children[0].height)
             scroll_height = float(grid_height - self.height)
-            cur_cell = self.children[0].children[0].cells[self.parent._chosen_row][0]
+            cur_cell = self.children[0].children[0].cells[self.parent.chosen_row][0]
             cur_cell_height = float(cur_cell.height)
             cur_row_y = float(cur_cell.y)
             # The convert scroll Y position
@@ -203,8 +203,8 @@ class ScrollViewTable(ScrollView):
                 else:
                     self.scroll_y = new_scroll_y
             # Scrolling to follows the current row
-            if (cur_row_y) > _scroll_y:
-                self.scroll_y = self.scroll_y + 1 * (cur_cell_height / 100) / (scroll_height / 100)
+            if cur_row_y > _scroll_y:
+                self.scroll_y += 1 * (cur_cell_height / 100) / (scroll_height / 100)
             # Stopping the scrolling when start of grid
             if self.scroll_y > 1:
                 self.scroll_y = 1
@@ -213,13 +213,13 @@ class ScrollViewTable(ScrollView):
     def down(self, row_num=1):
         """ Scrolling down when the chosen row is out of view """
         if self.size != [100.0, 100.0] and (self.parent.row_count != 0):
-            if self.parent._chosen_row + row_num < self.parent.row_count - 1:
-                self.parent.choose_row(self.parent._chosen_row + row_num)
+            if self.parent.chosen_row + row_num < self.parent.row_count - 1:
+                self.parent.choose_row(self.parent.chosen_row + row_num)
             else:
                 self.parent.choose_row(self.parent.row_count - 1)
             grid_height = float(self.children[0].height)
             scroll_height = float(grid_height - self.height)
-            cur_cell = self.children[0].children[0].cells[self.parent._chosen_row][0]
+            cur_cell = self.children[0].children[0].cells[self.parent.chosen_row][0]
             cur_cell_height = float(cur_cell.height)
             cur_row_y = float(cur_cell.y)
             # The convert scroll Y position
@@ -235,12 +235,11 @@ class ScrollViewTable(ScrollView):
                     self.scroll_y = new_scroll_y
             # Scrolling to follows the current row
             if cur_row_y < _scroll_y:
-                self.scroll_y = self.scroll_y - 1 * (cur_cell_height / 100) / (scroll_height / 100)
+                self.scroll_y -= 1 * (cur_cell_height / 100) / (scroll_height / 100)
             # Stopping the scrolling when end of grid
             if self.scroll_y < 0:
                 self.scroll_y = 0
             self._update_mouse(self.effect_y, self.scroll_y)
-
 
     def home(self):
         """ Scrolling to the top of the table """
@@ -256,12 +255,12 @@ class ScrollViewTable(ScrollView):
             self.parent.choose_row(self.parent.row_count - 1)
             self._update_mouse(self.effect_y, self.scroll_y)
 
-    def pgup(self, row_count=10):
+    def page_up(self, row_count=10):
         """ Scrolling up when the chosen row is out of view, but with step """
         if self.parent.row_count != 0:
             self.up(row_count)
 
-    def pgdn(self, row_count=10):
+    def page_down(self, row_count=10):
         """ 
         Scrolling down when the chosen row is out of view, but with step 
         """
@@ -277,7 +276,7 @@ class ScrollViewTable(ScrollView):
         """ Method of redraw this widget """
         with self.canvas.before:
             Rectangle(pos=self.pos, size=self.size)
-        # Editting the number panel width
+        # Editing the number panel width
         number_panel = self.children[0].children[1]
         if number_panel.auto_width and len(number_panel.children) > 0:
             last_number_label = self.children[0].children[1].children[0]
@@ -408,7 +407,7 @@ class NumberPanel(BoxLayout):
     @width_widget.setter
     def width_widget(self, width):
         null_label = self.parent.parent.parent.label_panel.children[-1]
-        if self._visible == True:
+        if self.visible is True:
             self._width = width
             self.width = width
             null_label.width = width
@@ -460,11 +459,10 @@ class GridTable(GridLayout):
         """ Get select item index """
         for index, child in enumerate(reversed(self.children)):
             if item_object == child:
-                columns = self.parent.parent.parent._cols
+                columns = self.parent.parent.parent.cols
                 row_index = index // columns
                 print(str(row_index), 'row is chosen')
                 return row_index
-                break
 
     def _redraw_widget(self, *args):
         """ Method of redraw this widget """
@@ -523,7 +521,7 @@ class NewCell(object):
 
     def _redraw_widget(self, *args):
         """ Method of redraw this widget """
-        # Editting a height of number label in this row
+        # Editing a height of number label in this row
         for num, line in enumerate(self.parent.cells):
             for cell in line:
                 if cell == self:

@@ -62,10 +62,10 @@ class MainScreen(BoxLayout):
             self.my_table.scroll_view.down()
         if keycode[0] == 281:  # PageDown
             print(keycode)
-            self.my_table.scroll_view.pgdn()
+            self.my_table.scroll_view.page_down()
         if keycode[0] == 280:  # PageUp
             print(keycode)
-            self.my_table.scroll_view.pgup()
+            self.my_table.scroll_view.page_up()
         if keycode[0] == 278:  # Home
             print(keycode)
             self.my_table.scroll_view.home()
