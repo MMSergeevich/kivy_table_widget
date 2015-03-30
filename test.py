@@ -11,7 +11,7 @@ from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
-from table import Table
+from kivy_table import Table
 
 
 class TestScreen(BoxLayout):
