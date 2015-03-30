@@ -13,7 +13,7 @@ from kivy.uix.button import Button
 from os.path import join, dirname, abspath
 
 
-Builder.load_file(join(dirname(abspath(__file__)), 'table.kv'))
+Builder.load_file(join(dirname(abspath(__file__)), 'kivy_table.kv'))
 
 
 class Table(BoxLayout):
