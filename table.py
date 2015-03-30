@@ -4,14 +4,12 @@
 # Copyright (C) 2014 Musikhin Andrey <melomansegfault@gmail.com>
 # Copyright (C) 2015 Kato Masaya <masaya@w32.jp>
 
-import kivy
 from kivy.lang import Builder
 from kivy.graphics import Color, Rectangle
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.button import Button
-from kivy.uix.label import Label
 from os.path import join, dirname, abspath
 
 
@@ -75,6 +73,14 @@ class Table(BoxLayout):
             count += 1
         return count
 
+    @property
+    def chosen_row(self):
+        return self._chosen_row
+
+    @chosen_row.setter
+    def chosen_row(self, number=0):
+        self._chosen_row = number
+
     def add_button_row(self, *args):
         """ 
         Add new row to table with Button widgets.
@@ -83,14 +89,13 @@ class Table(BoxLayout):
         if len(args) == self._cols:
             row_widget_list = []
             for num, item in enumerate(args):
-                Cell = type('Cell', (NewCell, Button), {})
-                cell = Cell()
+                cell = type('Cell', (NewCell, Button), {})()
                 cell.text = item
                 self.grid.add_widget(cell)
                 # Create widgets row list
                 row_widget_list.append(self.grid.children[0])
-            # Adding a widget to two-level array 
-            self._grid._cells.append(row_widget_list)
+            # Adding a widget to two-level array
+            self.grid.cells.append(row_widget_list)
             self.number_panel.add_widget(NewNumberLabel(text=str(self.row_count)))
         else:
             print('ERROR: Please, add %s strings in method\'s arguments' % str(self._cols))
@@ -103,15 +108,14 @@ class Table(BoxLayout):
         if len(args) == self._cols:
             row_widget_list = []
             for num, item in enumerate(args):
-                Cell = type('Cell', (NewCell, item[0]), {})
-                cell = Cell()
+                cell = type('Cell', (NewCell, item[0]), {})()
                 for key in list(item[1].keys()):
                     setattr(cell, key, item[1][key])
                 self.grid.add_widget(cell)
                 # Create widgets row list
                 row_widget_list.append(self.grid.children[0])
             # Adding a widget to two-level array 
-            self._grid._cells.append(row_widget_list)
+            self.grid.cells.append(row_widget_list)
             self.number_panel.add_widget(NewNumberLabel(text=str(self.row_count)))
             # Default the choosing
             if len(self.grid.cells) == 1:
@@ -127,32 +131,29 @@ class Table(BoxLayout):
             del self.grid.cells[number]
             self.number_panel.remove_widget(self.number_panel.children[0])
             # If was deleted the chosen row
-            if self._chosen_row == number:
-                self.choose_row(number)
+            if self.chosen_row == number and self.chosen_row < self.row_count-1:
+                self.choose_row(number, from_remove=True)
+            else:
+                self.choose_row(self.row_count-1, from_remove=True)
         else:
             print('ERROR: Nothing to delete...')
 
-    def choose_row(self, row_num=0):
+    def choose_row(self, row_num=0, from_remove=False):
         """ 
         Choose a row in our table.
         Example: choose_row(1)
         """
-        if len(self.grid.cells) > row_num:
+        if len(self.grid.cells) > row_num or not (len(self.grid.cells) == 0):
             for col_num in range(self._cols):
-                old_grid_element = self.grid.cells[self._chosen_row][col_num]
-                current_cell = self.grid.cells[row_num][col_num]
-                old_grid_element._background_color(old_grid_element.color_widget)
-                current_cell._background_color(current_cell.color_click)
-            self._chosen_row = row_num
-        elif len(self.grid.cells) == 0:
-            print('ERROR: Nothing to choose...')
+                if from_remove is False:
+                    old_grid_element = self.grid.cells[self.chosen_row][col_num]
+                    old_grid_element.background_color = old_grid_element.color_widget
+                if self.row_count != 0:
+                    current_cell = self.grid.cells[row_num][col_num]
+                    current_cell.background_color = current_cell.color_click
+            self.chosen_row = row_num
         else:
-            for col_num in range(self._cols):
-                old_grid_element = self.grid.cells[self._chosen_row][col_num]
-                current_cell = self.grid.cells[-1][col_num]
-                old_grid_element._background_color(old_grid_element.color_widget)
-                current_cell._background_color(current_cell.color_click)
-            self._chosen_row = row_num
+            print('ERROR: Nothing to choose...')
 
 
 class ScrollViewTable(ScrollView):
@@ -488,10 +489,6 @@ class NewCell(object):
         self._color_widget = [1, 1, 1, 1]
         self._color_click = [.3, .3, .3, 1]
 
-    def _background_color(self, value):
-        """ Set the background color """
-        self.background_color = value
-
     @property
     def color_widget(self):
         """ Cell color """
@@ -513,7 +510,10 @@ class NewCell(object):
 
     def _on_press_button(self, *args):
         """ On press method for current object """
-        self.parent.current_cell = args[0]
+        try:
+            self.parent.current_cell = args[0]
+        except:
+            return
         self.state = 'normal'
         print('pressed on grid item')
         self.main_table = self.parent.parent.parent.parent
